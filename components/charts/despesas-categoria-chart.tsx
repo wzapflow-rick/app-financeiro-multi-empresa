@@ -10,11 +10,14 @@ interface DespesasCategoriaChartProps {
 }
 
 const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
+  '#3b82f6', // Azul
+  '#22c55e', // Verde
+  '#f59e0b', // Laranja
+  '#8b5cf6', // Roxo
+  '#ef4444', // Vermelho
+  '#06b6d4', // Ciano
+  '#ec4899', // Rosa
+  '#84cc16', // Lima
 ]
 
 export function DespesasCategoriaChart({ data }: DespesasCategoriaChartProps) {
