@@ -111,8 +111,9 @@ export async function deleteRecord(
   table: TableName,
   id: number
 ): Promise<void> {
-  await nocoFetch(`/tables/${table}/records/${id}`, {
+  await nocoFetch(`/tables/${table}/records`, {
     method: 'DELETE',
+    body: JSON.stringify([{ Id: id }]),
   })
 }
 
