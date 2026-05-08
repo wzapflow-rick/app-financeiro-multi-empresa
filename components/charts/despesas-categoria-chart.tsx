@@ -1,6 +1,6 @@
 'use client'
 
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip, Legend } from 'recharts'
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { formatCurrency } from '@/lib/format'
 import type { DespesaCategoria } from '@/lib/types'
@@ -21,54 +21,78 @@ const COLORS = [
 ]
 
 export function DespesasCategoriaChart({ data }: DespesasCategoriaChartProps) {
+  const total = data.reduce((acc, item) => acc + item.valor, 0)
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Despesas por Categoria</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px]">
-          {data.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={90}
-                  paddingAngle={2}
-                  dataKey="valor"
-                  nameKey="categoria"
-                  label={({ categoria, percent }) =>
-                    `${categoria} (${(percent * 100).toFixed(0)}%)`
-                  }
-                  labelLine={false}
-                >
-                  {data.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip
-                  formatter={(value: number) => formatCurrency(value)}
-                  contentStyle={{
-                    backgroundColor: 'hsl(var(--card))',
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px',
-                  }}
-                />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          ) : (
-            <div className="flex h-full items-center justify-center text-muted-foreground">
-              Nenhuma despesa registrada
+        {data.length > 0 ? (
+          <div className="flex flex-col gap-4">
+            <div className="h-[200px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={data}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={50}
+                    outerRadius={80}
+                    paddingAngle={2}
+                    dataKey="valor"
+                    nameKey="categoria"
+                  >
+                    {data.map((_, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={COLORS[index % COLORS.length]}
+                      />
+                    ))}
+                  </Pie>
+                  <Tooltip
+                    formatter={(value: number) => formatCurrency(value)}
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--card))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px',
+                      color: 'hsl(var(--foreground))',
+                    }}
+                    labelStyle={{
+                      color: 'hsl(var(--foreground))',
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
             </div>
-          )}
-        </div>
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
+              {data.map((item, index) => (
+                <div key={item.categoria} className="flex items-center gap-2">
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  />
+                  <span className="text-sm text-foreground">
+                    {item.categoria}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {formatCurrency(item.valor)}
+                  </span>
+                </div>
+              ))}
+            </div>
+            {total > 0 && (
+              <div className="text-center text-sm text-muted-foreground">
+                Total: {formatCurrency(total)}
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="flex h-[300px] items-center justify-center text-muted-foreground">
+            Nenhuma despesa registrada
+          </div>
+        )}
       </CardContent>
     </Card>
   )
