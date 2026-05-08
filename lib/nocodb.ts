@@ -4,12 +4,11 @@ const NOCODB_URL = process.env.NOCODB_URL || ''
 const NOCODB_TOKEN = process.env.NOCODB_TOKEN || ''
 const BASE_ID = 'pmzl7er3efb92bo'
 
-// Nomes das tabelas no NocoDB
+// IDs das tabelas no NocoDB
 export const TABLES = {
-  empresas: 'empresas',
-  usuarios: 'usuarios',
-  categorias: 'categorias',
-  lancamentos: 'lancamentos',
+  empresas: 'mx326vhz9azmtqb',
+  categorias: 'm823g548ik4f7ts',
+  lancamentos: 'moyn0y59ijn5g14',
 } as const
 
 type TableName = (typeof TABLES)[keyof typeof TABLES]
@@ -154,10 +153,4 @@ export const lancamentosApi = {
   delete: (id: number) => deleteRecord(TABLES.lancamentos, id),
 }
 
-export const usuariosApi = {
-  list: (params?: ListParams) => listRecords<import('./types').Usuario>(TABLES.usuarios, params),
-  get: (id: number) => getRecord<import('./types').Usuario>(TABLES.usuarios, id),
-  create: (data: Partial<import('./types').Usuario>) => createRecord(TABLES.usuarios, data),
-  update: (id: number, data: Partial<import('./types').Usuario>) => updateRecord(TABLES.usuarios, id, data),
-  delete: (id: number) => deleteRecord(TABLES.usuarios, id),
-}
+
