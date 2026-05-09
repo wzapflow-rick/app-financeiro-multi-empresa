@@ -1,17 +1,27 @@
 import { NextResponse } from 'next/server'
 import { lancamentosApi, empresasApi, categoriasApi } from '@/lib/nocodb'
+import { getSession } from '@/lib/auth'
 import type { Lancamento, Empresa, Categoria, DashboardStats } from '@/lib/types'
 
 export async function GET(request: Request) {
   try {
+    const session = await getSession()
+    
+    if (!session) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { searchParams } = new URL(request.url)
     const empresa_id = searchParams.get('empresa_id')
     
-    // Buscar todos os dados em paralelo
+    // Filtro base por usuario_id
+    const userFilter = `(usuario_id,eq,${session.userId})`
+    
+    // Buscar todos os dados em paralelo, filtrados por usuario
     const [lancamentosRes, empresasRes, categoriasRes] = await Promise.all([
-      lancamentosApi.list({ limit: 1000 }),
-      empresasApi.list(),
-      categoriasApi.list(),
+      lancamentosApi.list({ limit: 1000, where: userFilter }),
+      empresasApi.list({ where: userFilter }),
+      categoriasApi.list({ where: userFilter }),
     ])
     
     let lancamentos = lancamentosRes.list as Lancamento[]

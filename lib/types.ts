@@ -4,6 +4,7 @@ export interface Empresa {
   Id: number
   nome: string
   cor: string
+  usuario_id: number
   created_at?: string
 }
 
@@ -20,6 +21,7 @@ export interface Categoria {
   nome: string
   tipo: 'entrada' | 'saida'
   icone?: string
+  usuario_id: number
   created_at?: string
 }
 
@@ -33,6 +35,7 @@ export interface Lancamento {
   status: 'pago' | 'pendente' | 'vencido'
   empresa_id: number
   categoria_id: number
+  usuario_id: number
   observacoes?: string
   created_at?: string
   // Relacionamentos (populated)
