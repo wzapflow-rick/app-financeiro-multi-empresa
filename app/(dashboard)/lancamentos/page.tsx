@@ -92,19 +92,110 @@ export default function LancamentosPage() {
         onEmpresaChange={setSelectedEmpresa}
       />
 
-      <div className="flex-1 overflow-auto p-6">
-        <div className="mb-4 flex items-center justify-between">
-          <p className="text-muted-foreground">
+      <div className="flex-1 overflow-auto p-3 sm:p-6">
+        <div className="mb-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <p className="text-sm sm:text-base text-muted-foreground">
             {lancamentos.length} lançamento{lancamentos.length !== 1 ? 's' : ''}{' '}
             encontrado{lancamentos.length !== 1 ? 's' : ''}
           </p>
-          <Button onClick={() => { setEditingLancamento(null); setFormOpen(true) }}>
+          <Button onClick={() => { setEditingLancamento(null); setFormOpen(true) }} className="w-full sm:w-auto">
             <Plus className="mr-2 h-4 w-4" />
             Novo Lançamento
           </Button>
         </div>
 
-        <div className="rounded-lg border">
+        {/* Mobile Cards View */}
+        <div className="md:hidden space-y-3">
+          {isLoading ? (
+            [...Array(5)].map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full" />
+            ))
+          ) : lancamentos.length === 0 ? (
+            <div className="py-12 text-center text-muted-foreground">
+              Nenhum lançamento encontrado
+            </div>
+          ) : (
+            lancamentos.map((lancamento) => (
+              <div
+                key={lancamento.Id}
+                className={`rounded-lg border p-3 ${
+                  lancamento.tipo === 'entrada'
+                    ? 'border-emerald-500/20 bg-emerald-500/5'
+                    : 'border-red-500/20 bg-red-500/5'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-center gap-2 min-w-0">
+                    {lancamento.tipo === 'entrada' ? (
+                      <ArrowUpCircle className="h-5 w-5 text-emerald-500 shrink-0" />
+                    ) : (
+                      <ArrowDownCircle className="h-5 w-5 text-red-500 shrink-0" />
+                    )}
+                    <div className="min-w-0">
+                      <p className="font-medium truncate text-sm">{lancamento.descricao}</p>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <div
+                          className="h-2 w-2 rounded-full shrink-0"
+                          style={{ backgroundColor: getEmpresaCor(lancamento.empresa_id) }}
+                        />
+                        <span className="truncate">{getEmpresaNome(lancamento.empresa_id)}</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`font-semibold text-sm ${
+                        lancamento.tipo === 'entrada' ? 'text-emerald-500' : 'text-red-500'
+                      }`}
+                    >
+                      {lancamento.tipo === 'entrada' ? '+' : '-'}
+                      {formatCurrency(lancamento.valor)}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => handleEdit(lancamento)}>
+                          <Pencil className="mr-2 h-4 w-4" />
+                          Editar
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => setDeleteId(lancamento.Id)}
+                          className="text-red-500"
+                        >
+                          <Trash2 className="mr-2 h-4 w-4" />
+                          Excluir
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </div>
+                <div className="mt-2 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">{formatDate(lancamento.data)}</span>
+                    <Badge
+                      variant="secondary"
+                      className={`${getStatusBgColor(lancamento.status)} text-xs`}
+                    >
+                      {lancamento.status === 'pago'
+                        ? 'Pago'
+                        : lancamento.status === 'vencido'
+                        ? 'Vencido'
+                        : 'Pendente'}
+                    </Badge>
+                  </div>
+                  <span className="text-muted-foreground">{getCategoriaNome(lancamento.categoria_id)}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block rounded-lg border">
           <Table>
             <TableHeader>
               <TableRow>

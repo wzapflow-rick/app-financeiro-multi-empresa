@@ -152,9 +152,9 @@ export default function RelatoriosPage() {
         onEmpresaChange={setSelectedEmpresa}
       />
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto p-3 sm:p-6">
         {/* Resumo Geral */}
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-3 sm:gap-4 grid-cols-1 sm:grid-cols-3">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -198,11 +198,11 @@ export default function RelatoriosPage() {
         </div>
 
         {/* Gráficos */}
-        <Tabs defaultValue="evolucao" className="mt-6">
-          <TabsList>
-            <TabsTrigger value="evolucao">Evolução Mensal</TabsTrigger>
-            <TabsTrigger value="categorias">Por Categoria</TabsTrigger>
-            <TabsTrigger value="empresas">Por Empresa</TabsTrigger>
+        <Tabs defaultValue="evolucao" className="mt-4 sm:mt-6">
+          <TabsList className="w-full sm:w-auto grid grid-cols-3 sm:flex">
+            <TabsTrigger value="evolucao" className="text-xs sm:text-sm">Evolução</TabsTrigger>
+            <TabsTrigger value="categorias" className="text-xs sm:text-sm">Categorias</TabsTrigger>
+            <TabsTrigger value="empresas" className="text-xs sm:text-sm">Empresas</TabsTrigger>
           </TabsList>
 
           <TabsContent value="evolucao" className="mt-4">
@@ -210,8 +210,8 @@ export default function RelatoriosPage() {
               <CardHeader>
                 <CardTitle>Evolução do Fluxo de Caixa</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
+              <CardContent className="p-3 sm:p-6">
+                <div className="h-[280px] sm:h-[400px]">
                   {evolucaoMensal.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart data={evolucaoMensal}>
@@ -274,13 +274,13 @@ export default function RelatoriosPage() {
           </TabsContent>
 
           <TabsContent value="categorias" className="mt-4">
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div className="grid gap-3 sm:gap-4 lg:grid-cols-2">
               <Card>
-                <CardHeader>
-                  <CardTitle>Despesas por Categoria</CardTitle>
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+                  <CardTitle className="text-base sm:text-lg">Despesas por Categoria</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="h-[400px]">
+                <CardContent className="p-3 sm:p-6">
+                  <div className="h-[280px] sm:h-[400px]">
                     {despesasPorCategoria.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
                         <PieChart>
@@ -322,22 +322,22 @@ export default function RelatoriosPage() {
               </Card>
 
               <Card>
-                <CardHeader>
-                  <CardTitle>Ranking de Despesas</CardTitle>
+                <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+                  <CardTitle className="text-base sm:text-lg">Ranking de Despesas</CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
+                <CardContent className="p-3 sm:p-6">
+                  <div className="space-y-3 sm:space-y-4">
                     {despesasPorCategoria.map((cat, i) => (
-                      <div key={cat.categoria} className="flex items-center gap-3">
-                        <span className="w-6 text-sm font-medium text-muted-foreground">
+                      <div key={cat.categoria} className="flex items-center gap-2 sm:gap-3">
+                        <span className="w-5 sm:w-6 text-xs sm:text-sm font-medium text-muted-foreground">
                           {i + 1}.
                         </span>
                         <div
-                          className="h-3 w-3 rounded-full"
+                          className="h-2 w-2 sm:h-3 sm:w-3 rounded-full shrink-0"
                           style={{ backgroundColor: COLORS[i % COLORS.length] }}
                         />
-                        <span className="flex-1 truncate">{cat.categoria}</span>
-                        <span className="font-semibold">{formatCurrency(cat.valor)}</span>
+                        <span className="flex-1 truncate text-sm sm:text-base">{cat.categoria}</span>
+                        <span className="font-semibold text-sm sm:text-base">{formatCurrency(cat.valor)}</span>
                       </div>
                     ))}
                     {despesasPorCategoria.length === 0 && (
@@ -353,11 +353,11 @@ export default function RelatoriosPage() {
 
           <TabsContent value="empresas" className="mt-4">
             <Card>
-              <CardHeader>
-                <CardTitle>Comparativo por Empresa</CardTitle>
+              <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+                <CardTitle className="text-base sm:text-lg">Comparativo por Empresa</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="h-[400px]">
+              <CardContent className="p-3 sm:p-6">
+                <div className="h-[280px] sm:h-[400px]">
                   {dadosPorEmpresa.length > 0 ? (
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={dadosPorEmpresa} layout="vertical">

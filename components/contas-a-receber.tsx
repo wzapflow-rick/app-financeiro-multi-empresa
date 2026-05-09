@@ -50,23 +50,23 @@ export function ContasAReceber({ lancamentos, onReceber }: ContasAReceberProps) 
               return (
                 <div
                   key={lancamento.Id}
-                  className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3"
+                  className="flex flex-col sm:flex-row sm:items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 gap-2"
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="truncate font-medium">{lancamento.descricao}</p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="truncate font-medium text-sm sm:text-base">{lancamento.descricao}</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground">
                       Receber em {formatDate(lancamento.data_vencimento || lancamento.data)}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3 ml-4">
-                    <span className="font-semibold text-emerald-500">
+                  <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+                    <span className="font-semibold text-emerald-500 text-sm sm:text-base">
                       +{formatCurrency(lancamento.valor)}
                     </span>
                     <Badge
                       variant="secondary"
-                      className={getStatusBgColor(
+                      className={`${getStatusBgColor(
                         dias < 0 ? 'vencido' : dias <= 2 ? 'pendente' : 'pendente'
-                      )}
+                      )} text-xs`}
                     >
                       {statusText}
                     </Badge>
@@ -75,14 +75,14 @@ export function ContasAReceber({ lancamentos, onReceber }: ContasAReceberProps) 
                       variant="outline"
                       onClick={() => handleReceber(lancamento)}
                       disabled={isRecebendo}
-                      className="gap-1 border-emerald-500/30 hover:bg-emerald-500/10"
+                      className="gap-1 border-emerald-500/30 hover:bg-emerald-500/10 text-xs sm:text-sm"
                     >
                       {isRecebendo ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-3 w-3 sm:h-4 sm:w-4 animate-spin" />
                       ) : (
-                        <Check className="h-4 w-4" />
+                        <Check className="h-3 w-3 sm:h-4 sm:w-4" />
                       )}
-                      {isRecebendo ? 'Recebendo...' : 'Receber'}
+                      <span className="hidden sm:inline">{isRecebendo ? 'Recebendo...' : 'Receber'}</span>
                     </Button>
                   </div>
                 </div>

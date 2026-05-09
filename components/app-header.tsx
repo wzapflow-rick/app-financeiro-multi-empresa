@@ -41,12 +41,12 @@ export function AppHeader({
   }
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
+    <header className="flex h-14 shrink-0 items-center gap-2 border-b px-2 sm:px-4">
       <SidebarTrigger className="-ml-1" />
-      <Separator orientation="vertical" className="mr-2 h-4" />
-      <h1 className="text-lg font-semibold">{title}</h1>
+      <Separator orientation="vertical" className="mr-2 h-4 hidden sm:block" />
+      <h1 className="text-base sm:text-lg font-semibold truncate">{title}</h1>
       
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-2 sm:gap-4">
         {showEmpresaFilter && empresas.length > 0 && (
           <Select
             value={selectedEmpresa?.toString() || 'all'}
@@ -54,8 +54,8 @@ export function AppHeader({
               onEmpresaChange?.(value === 'all' ? null : parseInt(value))
             }
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Todas empresas" />
+            <SelectTrigger className="w-[120px] sm:w-[180px] text-xs sm:text-sm">
+              <SelectValue placeholder="Todas" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">Todas empresas</SelectItem>
@@ -66,7 +66,7 @@ export function AppHeader({
                       className="h-2 w-2 rounded-full"
                       style={{ backgroundColor: empresa.cor || '#3b82f6' }}
                     />
-                    {empresa.nome}
+                    <span className="truncate">{empresa.nome}</span>
                   </div>
                 </SelectItem>
               ))}

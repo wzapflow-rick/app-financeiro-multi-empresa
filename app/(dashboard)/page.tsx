@@ -69,9 +69,9 @@ export default function DashboardPage() {
         selectedEmpresa={selectedEmpresa}
         onEmpresaChange={setSelectedEmpresa}
       />
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto p-3 sm:p-6">
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
+        <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
           <StatCard
             title="Total Entradas"
             value={formatCurrency(stats.totalEntradas)}
@@ -130,18 +130,18 @@ export default function DashboardPage() {
         </div>
 
         {/* Gráficos */}
-        <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4 lg:grid-cols-3">
           <FluxoCaixaChart data={data?.fluxoCaixa || []} />
           <DespesasCategoriaChart data={data?.despesasPorCategoria || []} />
         </div>
 
         {/* Análise dos Últimos 6 Meses */}
-        <div className="mt-6">
+        <div className="mt-4 sm:mt-6">
           <ResumoMensalChart data={data?.fluxoCaixa || []} />
         </div>
 
         {/* Contas a Receber e a Vencer */}
-        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <div className="mt-4 sm:mt-6 grid gap-3 sm:gap-4 lg:grid-cols-2">
           <ContasAReceber 
             lancamentos={data?.contasAReceberProximas || []} 
             onReceber={mutate} 

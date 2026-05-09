@@ -25,21 +25,21 @@ export function DespesasCategoriaChart({ data }: DespesasCategoriaChartProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Despesas por Categoria</CardTitle>
+      <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+        <CardTitle className="text-base sm:text-lg">Despesas por Categoria</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 sm:p-6">
         {data.length > 0 ? (
-          <div className="flex flex-col gap-4">
-            <div className="h-[200px]">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            <div className="h-[160px] sm:h-[200px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
                     data={data}
                     cx="50%"
                     cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
+                    innerRadius={35}
+                    outerRadius={60}
                     paddingAngle={2}
                     dataKey="valor"
                     nameKey="categoria"
@@ -66,24 +66,24 @@ export function DespesasCategoriaChart({ data }: DespesasCategoriaChartProps) {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
+            <div className="flex flex-wrap justify-center gap-x-3 gap-y-1.5 sm:gap-x-4 sm:gap-y-2">
               {data.map((item, index) => (
-                <div key={item.categoria} className="flex items-center gap-2">
+                <div key={item.categoria} className="flex items-center gap-1.5 sm:gap-2">
                   <div
-                    className="h-3 w-3 rounded-full"
+                    className="h-2 w-2 sm:h-3 sm:w-3 rounded-full shrink-0"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}
                   />
-                  <span className="text-sm text-foreground">
+                  <span className="text-xs sm:text-sm text-foreground truncate max-w-[80px] sm:max-w-none">
                     {item.categoria}
                   </span>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     {formatCurrency(item.valor)}
                   </span>
                 </div>
               ))}
             </div>
             {total > 0 && (
-              <div className="text-center text-sm text-muted-foreground">
+              <div className="text-center text-xs sm:text-sm text-muted-foreground">
                 Total: {formatCurrency(total)}
               </div>
             )}

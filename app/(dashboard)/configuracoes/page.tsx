@@ -125,63 +125,63 @@ export default function ConfiguracoesPage() {
     <>
       <AppHeader title="Configurações" showEmpresaFilter={false} />
 
-      <div className="flex-1 overflow-auto p-6">
+      <div className="flex-1 overflow-auto p-3 sm:p-6">
         <Tabs defaultValue="empresas">
-          <TabsList>
-            <TabsTrigger value="empresas">
-              <Building2 className="mr-2 h-4 w-4" />
+          <TabsList className="w-full sm:w-auto grid grid-cols-2 sm:flex">
+            <TabsTrigger value="empresas" className="text-xs sm:text-sm">
+              <Building2 className="mr-1 sm:mr-2 h-4 w-4" />
               Empresas
             </TabsTrigger>
-            <TabsTrigger value="categorias">
-              <Tag className="mr-2 h-4 w-4" />
+            <TabsTrigger value="categorias" className="text-xs sm:text-sm">
+              <Tag className="mr-1 sm:mr-2 h-4 w-4" />
               Categorias
             </TabsTrigger>
           </TabsList>
 
           {/* Tab Empresas */}
-          <TabsContent value="empresas" className="mt-6">
+          <TabsContent value="empresas" className="mt-4 sm:mt-6">
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
+              <CardHeader className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <CardTitle>Empresas</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-base sm:text-lg">Empresas</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
                       Gerencie as empresas do sistema
                     </CardDescription>
                   </div>
-                  <Button onClick={() => setEmpresaDialogOpen(true)}>
+                  <Button onClick={() => setEmpresaDialogOpen(true)} className="w-full sm:w-auto">
                     <Plus className="mr-2 h-4 w-4" />
                     Nova Empresa
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <div className="space-y-2 sm:space-y-3">
                   {empresas.length > 0 ? (
                     empresas.map((empresa) => (
                       <div
                         key={empresa.Id}
-                        className="flex items-center justify-between rounded-lg border p-4"
+                        className="flex items-center justify-between rounded-lg border p-3 sm:p-4"
                       >
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
                           <div
-                            className="h-4 w-4 rounded-full"
+                            className="h-3 w-3 sm:h-4 sm:w-4 rounded-full shrink-0"
                             style={{ backgroundColor: empresa.cor || '#3b82f6' }}
                           />
-                          <span className="font-medium">{empresa.nome}</span>
+                          <span className="font-medium text-sm sm:text-base truncate">{empresa.nome}</span>
                         </div>
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => setEmpresaDeleteId(empresa.Id)}
-                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                          className="text-red-500 hover:text-red-600 hover:bg-red-500/10 h-8 w-8 shrink-0"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     ))
                   ) : (
-                    <div className="py-12 text-center text-muted-foreground">
+                    <div className="py-8 sm:py-12 text-center text-muted-foreground text-sm">
                       Nenhuma empresa cadastrada. Clique em &quot;Nova Empresa&quot; para adicionar.
                     </div>
                   )}
@@ -191,27 +191,27 @@ export default function ConfiguracoesPage() {
           </TabsContent>
 
           {/* Tab Categorias */}
-          <TabsContent value="categorias" className="mt-6">
+          <TabsContent value="categorias" className="mt-4 sm:mt-6">
             <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
+              <CardHeader className="p-3 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <CardTitle>Categorias</CardTitle>
-                    <CardDescription>
+                    <CardTitle className="text-base sm:text-lg">Categorias</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">
                       Gerencie as categorias de lançamentos
                     </CardDescription>
                   </div>
-                  <Button onClick={() => setCategoriaDialogOpen(true)}>
+                  <Button onClick={() => setCategoriaDialogOpen(true)} className="w-full sm:w-auto">
                     <Plus className="mr-2 h-4 w-4" />
                     Nova Categoria
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent>
-                <div className="grid gap-6 lg:grid-cols-2">
+              <CardContent className="p-3 sm:p-6 pt-0 sm:pt-0">
+                <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
                   {/* Categorias de Entrada */}
                   <div>
-                    <h3 className="mb-3 font-medium text-emerald-500">
+                    <h3 className="mb-2 sm:mb-3 font-medium text-emerald-500 text-sm sm:text-base">
                       Categorias de Entrada
                     </h3>
                     <div className="space-y-2">
@@ -219,29 +219,29 @@ export default function ConfiguracoesPage() {
                         categoriasEntrada.map((cat) => (
                           <div
                             key={cat.Id}
-                            className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3"
+                            className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-2 sm:p-3"
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
                               <Badge
                                 variant="secondary"
-                                className="bg-emerald-500/10 text-emerald-500"
+                                className="bg-emerald-500/10 text-emerald-500 text-xs shrink-0"
                               >
                                 Entrada
                               </Badge>
-                              <span>{cat.nome}</span>
+                              <span className="text-sm truncate">{cat.nome}</span>
                             </div>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => setCategoriaDeleteId(cat.Id)}
-                              className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                              className="h-7 w-7 sm:h-8 sm:w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10 shrink-0"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                             </Button>
                           </div>
                         ))
                       ) : (
-                        <div className="py-6 text-center text-sm text-muted-foreground">
+                        <div className="py-4 sm:py-6 text-center text-xs sm:text-sm text-muted-foreground">
                           Nenhuma categoria de entrada
                         </div>
                       )}
@@ -250,7 +250,7 @@ export default function ConfiguracoesPage() {
 
                   {/* Categorias de Saída */}
                   <div>
-                    <h3 className="mb-3 font-medium text-red-500">
+                    <h3 className="mb-2 sm:mb-3 font-medium text-red-500 text-sm sm:text-base">
                       Categorias de Saída
                     </h3>
                     <div className="space-y-2">
@@ -258,29 +258,29 @@ export default function ConfiguracoesPage() {
                         categoriasSaida.map((cat) => (
                           <div
                             key={cat.Id}
-                            className="flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 p-3"
+                            className="flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 p-2 sm:p-3"
                           >
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
                               <Badge
                                 variant="secondary"
-                                className="bg-red-500/10 text-red-500"
+                                className="bg-red-500/10 text-red-500 text-xs shrink-0"
                               >
                                 Saída
                               </Badge>
-                              <span>{cat.nome}</span>
+                              <span className="text-sm truncate">{cat.nome}</span>
                             </div>
                             <Button
                               variant="ghost"
                               size="icon"
                               onClick={() => setCategoriaDeleteId(cat.Id)}
-                              className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                              className="h-7 w-7 sm:h-8 sm:w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10 shrink-0"
                             >
-                              <Trash2 className="h-4 w-4" />
+                              <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                             </Button>
                           </div>
                         ))
                       ) : (
-                        <div className="py-6 text-center text-sm text-muted-foreground">
+                        <div className="py-4 sm:py-6 text-center text-xs sm:text-sm text-muted-foreground">
                           Nenhuma categoria de saída
                         </div>
                       )}

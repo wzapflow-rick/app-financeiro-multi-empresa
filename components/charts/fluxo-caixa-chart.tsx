@@ -20,28 +20,29 @@ interface FluxoCaixaChartProps {
 export function FluxoCaixaChart({ data }: FluxoCaixaChartProps) {
   return (
     <Card className="col-span-full lg:col-span-2">
-      <CardHeader>
-        <CardTitle>Fluxo de Caixa</CardTitle>
+      <CardHeader className="p-3 sm:p-6 pb-2 sm:pb-2">
+        <CardTitle className="text-base sm:text-lg">Fluxo de Caixa</CardTitle>
       </CardHeader>
-      <CardContent>
-        <div className="h-[300px]">
+      <CardContent className="p-3 sm:p-6">
+        <div className="h-[200px] sm:h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
               <XAxis
                 dataKey="mes"
-                fontSize={12}
+                fontSize={10}
                 tickLine={false}
                 axisLine={false}
                 stroke="#a1a1aa"
-                tick={{ fill: '#a1a1aa' }}
+                tick={{ fill: '#a1a1aa', fontSize: 10 }}
               />
               <YAxis
-                fontSize={12}
+                fontSize={10}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => formatCurrencyCompact(value)}
                 stroke="#a1a1aa"
-                tick={{ fill: '#a1a1aa' }}
+                tick={{ fill: '#a1a1aa', fontSize: 10 }}
+                width={50}
               />
               <Tooltip
                 formatter={(value: number) => formatCurrencyCompact(value)}
