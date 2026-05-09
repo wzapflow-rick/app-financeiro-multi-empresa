@@ -52,6 +52,10 @@ export default function DashboardPage() {
     totalEntradas: 0,
     totalSaidas: 0,
     saldo: 0,
+    saldoReal: 0,
+    saldoPrevisto: 0,
+    entradasPendentes: 0,
+    saidasPendentes: 0,
     contasPendentes: 0,
     contasVencidas: 0,
     contasAReceber: 0,
@@ -67,7 +71,7 @@ export default function DashboardPage() {
       />
       <div className="flex-1 overflow-auto p-6">
         {/* Stats Cards */}
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
           <StatCard
             title="Total Entradas"
             value={formatCurrency(stats.totalEntradas)}
@@ -81,13 +85,25 @@ export default function DashboardPage() {
             iconClassName="bg-red-500/10 text-red-500"
           />
           <StatCard
-            title="Saldo"
-            value={formatCurrency(stats.saldo)}
+            title="Saldo Atual"
+            value={formatCurrency(stats.saldoReal)}
+            description="somente pagos"
             icon={Wallet}
             iconClassName={
-              stats.saldo >= 0
+              stats.saldoReal >= 0
                 ? 'bg-emerald-500/10 text-emerald-500'
                 : 'bg-red-500/10 text-red-500'
+            }
+          />
+          <StatCard
+            title="Saldo Previsto"
+            value={formatCurrency(stats.saldoPrevisto)}
+            description="inclui pendentes"
+            icon={Wallet}
+            iconClassName={
+              stats.saldoPrevisto >= 0
+                ? 'bg-blue-500/10 text-blue-500'
+                : 'bg-orange-500/10 text-orange-500'
             }
           />
           <StatCard

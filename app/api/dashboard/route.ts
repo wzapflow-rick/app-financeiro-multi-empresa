@@ -24,6 +24,7 @@ export async function GET(request: Request) {
     }
     
     // Calcular estatísticas
+    // Entradas e saídas PAGAS (efetivadas)
     const totalEntradas = lancamentos
       .filter(l => l.tipo === 'entrada' && l.status === 'pago')
       .reduce((sum, l) => sum + (l.valor || 0), 0)
@@ -31,6 +32,21 @@ export async function GET(request: Request) {
     const totalSaidas = lancamentos
       .filter(l => l.tipo === 'saida' && l.status === 'pago')
       .reduce((sum, l) => sum + (l.valor || 0), 0)
+    
+    // Entradas e saídas PENDENTES
+    const entradasPendentes = lancamentos
+      .filter(l => l.tipo === 'entrada' && l.status !== 'pago')
+      .reduce((sum, l) => sum + (l.valor || 0), 0)
+    
+    const saidasPendentes = lancamentos
+      .filter(l => l.tipo === 'saida' && l.status !== 'pago')
+      .reduce((sum, l) => sum + (l.valor || 0), 0)
+    
+    // Saldo Real = apenas transações pagas
+    const saldoReal = totalEntradas - totalSaidas
+    
+    // Saldo Previsto = saldo real + entradas pendentes - saídas pendentes
+    const saldoPrevisto = saldoReal + entradasPendentes - saidasPendentes
     
     const today = new Date()
     today.setHours(0, 0, 0, 0)
@@ -66,7 +82,11 @@ export async function GET(request: Request) {
     const stats: DashboardStats = {
       totalEntradas,
       totalSaidas,
-      saldo: totalEntradas - totalSaidas,
+      saldo: saldoReal,
+      saldoReal,
+      saldoPrevisto,
+      entradasPendentes,
+      saidasPendentes,
       contasPendentes,
       contasVencidas,
       contasAReceber,

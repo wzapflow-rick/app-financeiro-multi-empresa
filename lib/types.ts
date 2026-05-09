@@ -44,6 +44,13 @@ export interface DashboardStats {
   totalEntradas: number
   totalSaidas: number
   saldo: number
+  // Saldo Real = apenas transações com status "pago"
+  saldoReal: number
+  // Saldo Previsto = saldo real + entradas pendentes - saídas pendentes
+  saldoPrevisto: number
+  // Totais pendentes
+  entradasPendentes: number
+  saidasPendentes: number
   contasPendentes: number
   contasVencidas: number
   contasAReceber: number
