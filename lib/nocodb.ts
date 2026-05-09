@@ -89,12 +89,25 @@ export async function createRecord<T>(
   table: TableName,
   data: Partial<T>
 ): Promise<T> {
-  const result = await nocoFetch<T | T[]>(`/tables/${table}/records`, {
+  // NocoDB v2 API pode não retornar o registro criado
+  // Então vamos fazer o POST e depois buscar o registro criado
+  const result = await nocoFetch<T | T[] | Record<string, unknown>>(`/tables/${table}/records`, {
     method: 'POST',
     body: JSON.stringify([data]),
   })
-  // A API retorna um array, então pegamos o primeiro item
-  return Array.isArray(result) ? result[0] : result
+  
+  // A API pode retornar diferentes formatos
+  if (Array.isArray(result) && result.length > 0) {
+    return result[0]
+  }
+  
+  // Se retornou um objeto com Id
+  if (result && typeof result === 'object' && 'Id' in result) {
+    return result as T
+  }
+  
+  // Se retornou vazio ou outro formato, retornar null e deixar o chamador buscar
+  return null as unknown as T
 }
 
 // Atualizar um registro

@@ -86,13 +86,25 @@ export async function registerUser(nome: string, email: string, password: string
   const hashedPassword = await hashPassword(password)
   
   // Criar usuário
-  const user = await usuariosApi.create({
+  const createResult = await usuariosApi.create({
     nome,
     email,
     senha: hashedPassword,
   })
   
-  return user
+  // Se o resultado tem Id, retornar diretamente
+  if (createResult && createResult.Id) {
+    return createResult
+  }
+  
+  // Se não tiver Id, buscar o usuário recem criado pelo email
+  const newUsers = await usuariosApi.list({ where: `(email,eq,${email})` })
+  
+  if (newUsers.list.length === 0) {
+    throw new Error('Erro ao criar usuario - nao encontrado apos criacao')
+  }
+  
+  return newUsers.list[0]
 }
 
 // Login
