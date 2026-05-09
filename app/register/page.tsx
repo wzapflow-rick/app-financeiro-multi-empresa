@@ -70,15 +70,11 @@ export default function RegisterPage() {
         
         <div className="relative z-10 flex flex-col justify-center items-center w-full px-12">
           <div className="text-center">
-            <div className="mb-8">
-              <Image
-                src="/logo.png"
-                alt="ZapFlow"
-                width={280}
-                height={80}
-                className="mx-auto drop-shadow-2xl"
-                priority
-              />
+            <div className="mb-8 flex items-center justify-center gap-4">
+              {/* Icone Z estilizado */}
+              <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center shadow-2xl">
+                <span className="text-5xl font-bold text-emerald-600">Z</span>
+              </div>
             </div>
             <h1 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
               ZAPFLOW FINANCAS
