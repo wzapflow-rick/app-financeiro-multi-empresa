@@ -1,15 +1,34 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Check, Loader2 } from 'lucide-react'
 import { formatCurrency, formatDate, getDaysUntilDue, getStatusBgColor } from '@/lib/format'
+import { updateLancamento } from '@/hooks/use-data'
 import type { Lancamento } from '@/lib/types'
 
 interface ContasProximasProps {
   lancamentos: Lancamento[]
+  onPagar?: () => void
 }
 
-export function ContasProximas({ lancamentos }: ContasProximasProps) {
+export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
+  const [pagando, setPagando] = useState<number | null>(null)
+
+  async function handlePagar(lancamento: Lancamento) {
+    setPagando(lancamento.Id)
+    try {
+      await updateLancamento(lancamento.Id, { status: 'pago' })
+      onPagar?.()
+    } catch (error) {
+      console.error('Erro ao marcar como pago:', error)
+    } finally {
+      setPagando(null)
+    }
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -22,6 +41,7 @@ export function ContasProximas({ lancamentos }: ContasProximasProps) {
               const dias = getDaysUntilDue(lancamento.data_vencimento || lancamento.data)
               const statusText =
                 dias === 0 ? 'Hoje' : dias === 1 ? 'Amanhã' : `${dias} dias`
+              const isPagando = pagando === lancamento.Id
 
               return (
                 <div
@@ -53,6 +73,20 @@ export function ContasProximas({ lancamentos }: ContasProximasProps) {
                     >
                       {statusText}
                     </Badge>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handlePagar(lancamento)}
+                      disabled={isPagando}
+                      className="gap-1"
+                    >
+                      {isPagando ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Check className="h-4 w-4" />
+                      )}
+                      {isPagando ? 'Pagando...' : 'Pagar'}
+                    </Button>
                   </div>
                 </div>
               )

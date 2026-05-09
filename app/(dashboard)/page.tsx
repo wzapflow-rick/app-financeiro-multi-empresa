@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 export default function DashboardPage() {
   const [selectedEmpresa, setSelectedEmpresa] = useState<number | null>(null)
-  const { data, isLoading } = useDashboard(selectedEmpresa || undefined)
+  const { data, isLoading, mutate } = useDashboard(selectedEmpresa || undefined)
 
   if (isLoading) {
     return (
@@ -105,7 +105,7 @@ export default function DashboardPage() {
         </div>
 
         <div className="mt-6">
-          <ContasProximas lancamentos={data?.contasProximas || []} />
+          <ContasProximas lancamentos={data?.contasProximas || []} onPagar={mutate} />
         </div>
       </div>
     </>

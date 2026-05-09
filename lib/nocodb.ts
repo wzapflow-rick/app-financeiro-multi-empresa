@@ -100,9 +100,9 @@ export async function updateRecord<T>(
   id: number,
   data: Partial<T>
 ): Promise<T> {
-  return nocoFetch<T>(`/tables/${table}/records/${id}`, {
+  return nocoFetch<T>(`/tables/${table}/records`, {
     method: 'PATCH',
-    body: JSON.stringify(data),
+    body: JSON.stringify([{ Id: id, ...data }]),
   })
 }
 
