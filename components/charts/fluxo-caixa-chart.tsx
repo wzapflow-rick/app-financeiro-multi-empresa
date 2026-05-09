@@ -32,14 +32,16 @@ export function FluxoCaixaChart({ data }: FluxoCaixaChartProps) {
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="#a1a1aa"
+                tick={{ fill: '#a1a1aa' }}
               />
               <YAxis
                 fontSize={12}
                 tickLine={false}
                 axisLine={false}
                 tickFormatter={(value) => formatCurrencyCompact(value)}
-                stroke="hsl(var(--muted-foreground))"
+                stroke="#a1a1aa"
+                tick={{ fill: '#a1a1aa' }}
               />
               <Tooltip
                 formatter={(value: number) => formatCurrencyCompact(value)}

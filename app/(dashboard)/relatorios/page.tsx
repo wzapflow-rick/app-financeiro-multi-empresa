@@ -218,11 +218,13 @@ export default function RelatoriosPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis
                           dataKey="mes"
-                          stroke="hsl(var(--muted-foreground))"
+                          stroke="#a1a1aa"
+                          tick={{ fill: '#a1a1aa' }}
                           fontSize={12}
                         />
                         <YAxis
-                          stroke="hsl(var(--muted-foreground))"
+                          stroke="#a1a1aa"
+                          tick={{ fill: '#a1a1aa' }}
                           fontSize={12}
                           tickFormatter={(v) => formatCurrencyCompact(v)}
                         />
@@ -362,14 +364,16 @@ export default function RelatoriosPage() {
                         <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                         <XAxis
                           type="number"
-                          stroke="hsl(var(--muted-foreground))"
+                          stroke="#a1a1aa"
+                          tick={{ fill: '#a1a1aa' }}
                           fontSize={12}
                           tickFormatter={(v) => formatCurrencyCompact(v)}
                         />
                         <YAxis
                           type="category"
                           dataKey="empresa"
-                          stroke="hsl(var(--muted-foreground))"
+                          stroke="#a1a1aa"
+                          tick={{ fill: '#a1a1aa' }}
                           fontSize={12}
                           width={100}
                         />
