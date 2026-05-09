@@ -35,14 +35,30 @@ export async function GET(request: Request) {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     
+    // Contas a Vencer (saídas pendentes)
     const contasPendentes = lancamentos.filter(l => {
-      if (l.status === 'pago') return false
+      if (l.status === 'pago' || l.tipo !== 'saida') return false
       const vencimento = new Date(l.data_vencimento || l.data)
       return vencimento >= today
     }).length
     
+    // Contas Vencidas (saídas vencidas)
     const contasVencidas = lancamentos.filter(l => {
-      if (l.status === 'pago') return false
+      if (l.status === 'pago' || l.tipo !== 'saida') return false
+      const vencimento = new Date(l.data_vencimento || l.data)
+      return vencimento < today
+    }).length
+    
+    // Contas a Receber (entradas pendentes)
+    const contasAReceber = lancamentos.filter(l => {
+      if (l.status === 'pago' || l.tipo !== 'entrada') return false
+      const vencimento = new Date(l.data_vencimento || l.data)
+      return vencimento >= today
+    }).length
+    
+    // Contas a Receber Vencidas
+    const contasAReceberVencidas = lancamentos.filter(l => {
+      if (l.status === 'pago' || l.tipo !== 'entrada') return false
       const vencimento = new Date(l.data_vencimento || l.data)
       return vencimento < today
     }).length
@@ -53,6 +69,8 @@ export async function GET(request: Request) {
       saldo: totalEntradas - totalSaidas,
       contasPendentes,
       contasVencidas,
+      contasAReceber,
+      contasAReceberVencidas,
     }
     
     // Fluxo de caixa dos últimos 6 meses
@@ -93,15 +111,34 @@ export async function GET(request: Request) {
       .sort((a, b) => b.valor - a.valor)
       .slice(0, 5)
     
-    // Contas a vencer nos próximos 7 dias
+    // Contas a Vencer (saídas) nos próximos 7 dias
     const seteDias = new Date()
     seteDias.setDate(seteDias.getDate() + 7)
     
-    const contasProximas = lancamentos
+    const contasAVencer = lancamentos
       .filter(l => {
-        if (l.status === 'pago') return false
+        if (l.status === 'pago' || l.tipo !== 'saida') return false
         const vencimento = new Date(l.data_vencimento || l.data)
         return vencimento >= today && vencimento <= seteDias
+      })
+      .sort((a, b) => {
+        const dataA = new Date(a.data_vencimento || a.data)
+        const dataB = new Date(b.data_vencimento || b.data)
+        return dataA.getTime() - dataB.getTime()
+      })
+      .slice(0, 5)
+    
+    // Contas a Receber (entradas) nos próximos 7 dias
+    const contasAReceberProximas = lancamentos
+      .filter(l => {
+        if (l.status === 'pago' || l.tipo !== 'entrada') return false
+        const vencimento = new Date(l.data_vencimento || l.data)
+        return vencimento >= today && vencimento <= seteDias
+      })
+      .sort((a, b) => {
+        const dataA = new Date(a.data_vencimento || a.data)
+        const dataB = new Date(b.data_vencimento || b.data)
+        return dataA.getTime() - dataB.getTime()
       })
       .slice(0, 5)
     
@@ -109,7 +146,8 @@ export async function GET(request: Request) {
       stats,
       fluxoCaixa,
       despesasPorCategoria,
-      contasProximas,
+      contasAVencer,
+      contasAReceberProximas,
       empresas,
       categorias,
     })

@@ -46,6 +46,8 @@ export interface DashboardStats {
   saldo: number
   contasPendentes: number
   contasVencidas: number
+  contasAReceber: number
+  contasAReceberVencidas: number
 }
 
 export interface FluxoCaixaMensal {

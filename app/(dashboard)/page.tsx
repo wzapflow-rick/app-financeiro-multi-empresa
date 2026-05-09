@@ -7,12 +7,16 @@ import {
   Wallet,
   AlertTriangle,
   Clock,
+  ArrowDownCircle,
+  ArrowUpCircle,
 } from 'lucide-react'
 import { AppHeader } from '@/components/app-header'
 import { StatCard } from '@/components/stat-card'
 import { FluxoCaixaChart } from '@/components/charts/fluxo-caixa-chart'
 import { DespesasCategoriaChart } from '@/components/charts/despesas-categoria-chart'
-import { ContasProximas } from '@/components/contas-proximas'
+import { ResumoMensalChart } from '@/components/charts/resumo-mensal-chart'
+import { ContasAVencer } from '@/components/contas-a-vencer'
+import { ContasAReceber } from '@/components/contas-a-receber'
 import { useDashboard } from '@/hooks/use-data'
 import { formatCurrency } from '@/lib/format'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -31,7 +35,7 @@ export default function DashboardPage() {
         />
         <div className="flex-1 p-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {[...Array(5)].map((_, i) => (
+            {[...Array(6)].map((_, i) => (
               <Skeleton key={i} className="h-32" />
             ))}
           </div>
@@ -50,6 +54,8 @@ export default function DashboardPage() {
     saldo: 0,
     contasPendentes: 0,
     contasVencidas: 0,
+    contasAReceber: 0,
+    contasAReceberVencidas: 0,
   }
 
   return (
@@ -60,7 +66,8 @@ export default function DashboardPage() {
         onEmpresaChange={setSelectedEmpresa}
       />
       <div className="flex-1 overflow-auto p-6">
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
+        {/* Stats Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
           <StatCard
             title="Total Entradas"
             value={formatCurrency(stats.totalEntradas)}
@@ -84,28 +91,49 @@ export default function DashboardPage() {
             }
           />
           <StatCard
-            title="Contas Pendentes"
+            title="A Receber"
+            value={stats.contasAReceber.toString()}
+            description="entradas pendentes"
+            icon={ArrowDownCircle}
+            iconClassName="bg-emerald-500/10 text-emerald-500"
+          />
+          <StatCard
+            title="A Vencer"
             value={stats.contasPendentes.toString()}
-            description="aguardando pagamento"
+            description="saídas pendentes"
             icon={Clock}
             iconClassName="bg-amber-500/10 text-amber-500"
           />
           <StatCard
-            title="Contas Vencidas"
-            value={stats.contasVencidas.toString()}
+            title="Vencidas"
+            value={(stats.contasVencidas + stats.contasAReceberVencidas).toString()}
             description="precisam atenção"
             icon={AlertTriangle}
             iconClassName="bg-red-500/10 text-red-500"
           />
         </div>
 
+        {/* Gráficos */}
         <div className="mt-6 grid gap-4 lg:grid-cols-3">
           <FluxoCaixaChart data={data?.fluxoCaixa || []} />
           <DespesasCategoriaChart data={data?.despesasPorCategoria || []} />
         </div>
 
+        {/* Análise dos Últimos 6 Meses */}
         <div className="mt-6">
-          <ContasProximas lancamentos={data?.contasProximas || []} onPagar={mutate} />
+          <ResumoMensalChart data={data?.fluxoCaixa || []} />
+        </div>
+
+        {/* Contas a Receber e a Vencer */}
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <ContasAReceber 
+            lancamentos={data?.contasAReceberProximas || []} 
+            onReceber={mutate} 
+          />
+          <ContasAVencer 
+            lancamentos={data?.contasAVencer || []} 
+            onPagar={mutate} 
+          />
         </div>
       </div>
     </>

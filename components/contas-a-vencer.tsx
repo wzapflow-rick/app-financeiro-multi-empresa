@@ -4,17 +4,17 @@ import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2, TrendingDown } from 'lucide-react'
 import { formatCurrency, formatDate, getDaysUntilDue, getStatusBgColor } from '@/lib/format'
 import { updateLancamento } from '@/hooks/use-data'
 import type { Lancamento } from '@/lib/types'
 
-interface ContasProximasProps {
+interface ContasAVencerProps {
   lancamentos: Lancamento[]
   onPagar?: () => void
 }
 
-export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
+export function ContasAVencer({ lancamentos, onPagar }: ContasAVencerProps) {
   const [pagando, setPagando] = useState<number | null>(null)
 
   async function handlePagar(lancamento: Lancamento) {
@@ -31,8 +31,12 @@ export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle>Contas a Vencer</CardTitle>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="flex items-center gap-2">
+          <TrendingDown className="h-5 w-5 text-red-500" />
+          Contas a Vencer
+        </CardTitle>
+        <span className="text-sm text-muted-foreground">Saídas pendentes</span>
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
@@ -46,7 +50,7 @@ export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
               return (
                 <div
                   key={lancamento.Id}
-                  className="flex items-center justify-between rounded-lg border p-3"
+                  className="flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 p-3"
                 >
                   <div className="flex-1 min-w-0">
                     <p className="truncate font-medium">{lancamento.descricao}</p>
@@ -55,15 +59,8 @@ export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
                     </p>
                   </div>
                   <div className="flex items-center gap-3 ml-4">
-                    <span
-                      className={`font-semibold ${
-                        lancamento.tipo === 'entrada'
-                          ? 'text-emerald-500'
-                          : 'text-red-500'
-                      }`}
-                    >
-                      {lancamento.tipo === 'entrada' ? '+' : '-'}
-                      {formatCurrency(lancamento.valor)}
+                    <span className="font-semibold text-red-500">
+                      -{formatCurrency(lancamento.valor)}
                     </span>
                     <Badge
                       variant="secondary"
@@ -93,7 +90,7 @@ export function ContasProximas({ lancamentos, onPagar }: ContasProximasProps) {
             })
           ) : (
             <div className="py-8 text-center text-muted-foreground">
-              Nenhuma conta próxima do vencimento
+              Nenhuma conta a vencer nos próximos dias
             </div>
           )}
         </div>
