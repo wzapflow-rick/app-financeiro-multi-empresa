@@ -24,11 +24,14 @@ import { useLancamentos, useEmpresas, useCategorias } from '@/hooks/use-data'
 import { formatCurrency, formatCurrencyCompact } from '@/lib/format'
 
 const COLORS = [
-  'hsl(var(--chart-1))',
-  'hsl(var(--chart-2))',
-  'hsl(var(--chart-3))',
-  'hsl(var(--chart-4))',
-  'hsl(var(--chart-5))',
+  '#3b82f6', // Azul
+  '#22c55e', // Verde
+  '#f59e0b', // Laranja
+  '#8b5cf6', // Roxo
+  '#ef4444', // Vermelho
+  '#06b6d4', // Ciano
+  '#ec4899', // Rosa
+  '#84cc16', // Lima
 ]
 
 export default function RelatoriosPage() {
@@ -236,25 +239,25 @@ export default function RelatoriosPage() {
                           type="monotone"
                           dataKey="entradas"
                           name="Entradas"
-                          stroke="hsl(var(--chart-2))"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
+                          stroke="#22c55e"
+                          strokeWidth={3}
+                          dot={{ r: 5, fill: '#22c55e' }}
                         />
                         <Line
                           type="monotone"
                           dataKey="saidas"
                           name="Saídas"
-                          stroke="hsl(var(--chart-5))"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
+                          stroke="#ef4444"
+                          strokeWidth={3}
+                          dot={{ r: 5, fill: '#ef4444' }}
                         />
                         <Line
                           type="monotone"
                           dataKey="saldo"
                           name="Saldo"
-                          stroke="hsl(var(--chart-1))"
-                          strokeWidth={2}
-                          dot={{ r: 4 }}
+                          stroke="#3b82f6"
+                          strokeWidth={3}
+                          dot={{ r: 5, fill: '#3b82f6' }}
                         />
                       </LineChart>
                     </ResponsiveContainer>
@@ -382,13 +385,13 @@ export default function RelatoriosPage() {
                         <Bar
                           dataKey="entradas"
                           name="Entradas"
-                          fill="hsl(var(--chart-2))"
+                          fill="#22c55e"
                           radius={[0, 4, 4, 0]}
                         />
                         <Bar
                           dataKey="saidas"
                           name="Saídas"
-                          fill="hsl(var(--chart-5))"
+                          fill="#ef4444"
                           radius={[0, 4, 4, 0]}
                         />
                       </BarChart>
