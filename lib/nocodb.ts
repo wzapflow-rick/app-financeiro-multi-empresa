@@ -9,6 +9,7 @@ export const TABLES = {
   empresas: 'mx326vhz9azmtqb',
   categorias: 'm823g548ik4f7ts',
   lancamentos: 'moyn0y59ijn5g14',
+  usuarios: 'mwfp8v3x2k9u7zr', // Tabela de usuários - criar no NocoDB
 } as const
 
 type TableName = (typeof TABLES)[keyof typeof TABLES]
@@ -152,6 +153,14 @@ export const lancamentosApi = {
   create: (data: Partial<import('./types').Lancamento>) => createRecord(TABLES.lancamentos, data),
   update: (id: number, data: Partial<import('./types').Lancamento>) => updateRecord(TABLES.lancamentos, id, data),
   delete: (id: number) => deleteRecord(TABLES.lancamentos, id),
+}
+
+export const usuariosApi = {
+  list: (params?: ListParams) => listRecords<import('./types').Usuario>(TABLES.usuarios, params),
+  get: (id: number) => getRecord<import('./types').Usuario>(TABLES.usuarios, id),
+  create: (data: Partial<import('./types').Usuario>) => createRecord(TABLES.usuarios, data),
+  update: (id: number, data: Partial<import('./types').Usuario>) => updateRecord(TABLES.usuarios, id, data),
+  delete: (id: number) => deleteRecord(TABLES.usuarios, id),
 }
 
 

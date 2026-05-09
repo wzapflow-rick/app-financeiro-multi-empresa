@@ -3,18 +3,18 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { Eye, EyeOff, Lock, Mail, Loader2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Eye, EyeOff, Lock, Mail, User, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const redirect = searchParams.get('redirect') || '/'
   
+  const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
@@ -22,25 +22,36 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    if (password !== confirmPassword) {
+      setError('As senhas nao coincidem')
+      return
+    }
+
+    if (password.length < 6) {
+      setError('A senha deve ter pelo menos 6 caracteres')
+      return
+    }
+
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, senha: password }),
+        body: JSON.stringify({ nome, email, senha: password }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.error || 'Erro ao fazer login')
+        throw new Error(data.error || 'Erro ao criar conta')
       }
 
-      router.push(redirect)
+      router.push('/')
       router.refresh()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erro ao fazer login')
+      setError(err instanceof Error ? err.message : 'Erro ao criar conta')
     } finally {
       setIsLoading(false)
     }
@@ -73,7 +84,7 @@ export default function LoginPage() {
               ZAPFLOW FINANCAS
             </h1>
             <p className="text-xl text-white/90 max-w-md mx-auto leading-relaxed">
-              Gerencie suas financas de forma inteligente com controle total sobre suas empresas
+              Crie sua conta e comece a gerenciar suas financas de forma inteligente
             </p>
           </div>
           
@@ -112,19 +123,38 @@ export default function LoginPage() {
 
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-foreground">
-              Bem-vindo de volta
+              Criar sua conta
             </h2>
             <p className="text-muted-foreground mt-2">
-              Entre com suas credenciais para acessar
+              Preencha os dados abaixo para comecar
             </p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-red-500/10 border border-red-500/20 text-red-500 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}
+
+            <div className="space-y-2">
+              <label htmlFor="nome" className="text-sm font-medium text-foreground">
+                Nome completo
+              </label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="nome"
+                  type="text"
+                  placeholder="Seu nome"
+                  value={nome}
+                  onChange={(e) => setNome(e.target.value)}
+                  className="pl-10 h-12 bg-secondary/50"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
 
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-medium text-foreground">
@@ -154,7 +184,7 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
-                  placeholder="******"
+                  placeholder="Minimo 6 caracteres"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="pl-10 pr-10 h-12 bg-secondary/50"
@@ -176,6 +206,25 @@ export default function LoginPage() {
               </div>
             </div>
 
+            <div className="space-y-2">
+              <label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">
+                Confirmar senha
+              </label>
+              <div className="relative">
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                <Input
+                  id="confirmPassword"
+                  type={showPassword ? 'text' : 'password'}
+                  placeholder="Repita a senha"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="pl-10 h-12 bg-secondary/50"
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            </div>
+
             <Button
               type="submit"
               disabled={isLoading}
@@ -184,19 +233,19 @@ export default function LoginPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                  Entrando...
+                  Criando conta...
                 </>
               ) : (
-                'Entrar'
+                'Criar conta'
               )}
             </Button>
           </form>
 
           <div className="mt-8 text-center text-sm text-muted-foreground">
             <p>
-              Ainda nao tem uma conta?{' '}
-              <Link href="/register" className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors">
-                Criar conta
+              Ja tem uma conta?{' '}
+              <Link href="/login" className="text-emerald-500 hover:text-emerald-400 font-medium transition-colors">
+                Fazer login
               </Link>
             </p>
           </div>

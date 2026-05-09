@@ -1,7 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { LogOut } from 'lucide-react'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
@@ -24,7 +27,18 @@ export function AppHeader({
   onEmpresaChange,
   showEmpresaFilter = true,
 }: AppHeaderProps) {
+  const router = useRouter()
   const { empresas } = useEmpresas()
+
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' })
+      router.push('/login')
+      router.refresh()
+    } catch (error) {
+      console.error('Erro ao fazer logout:', error)
+    }
+  }
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -59,6 +73,16 @@ export function AppHeader({
             </SelectContent>
           </Select>
         )}
+        
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={handleLogout}
+          title="Sair"
+          className="text-muted-foreground hover:text-red-500"
+        >
+          <LogOut className="h-5 w-5" />
+        </Button>
       </div>
     </header>
   )
