@@ -9,7 +9,7 @@ export const TABLES = {
   empresas: 'mx326vhz9azmtqb',
   categorias: 'm823g548ik4f7ts',
   lancamentos: 'moyn0y59ijn5g14',
-  usuarios: 'mwfp8v3x2k9u7zr', // Tabela de usuários - criar no NocoDB
+  usuarios: 'mpt32u8oxo3ue2z',
 } as const
 
 type TableName = (typeof TABLES)[keyof typeof TABLES]
@@ -89,10 +89,12 @@ export async function createRecord<T>(
   table: TableName,
   data: Partial<T>
 ): Promise<T> {
-  return nocoFetch<T>(`/tables/${table}/records`, {
+  const result = await nocoFetch<T | T[]>(`/tables/${table}/records`, {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify([data]),
   })
+  // A API retorna um array, então pegamos o primeiro item
+  return Array.isArray(result) ? result[0] : result
 }
 
 // Atualizar um registro
