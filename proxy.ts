@@ -6,7 +6,7 @@ const SESSION_COOKIE_NAME = 'zapflow_session'
 // Rotas públicas que não precisam de autenticação
 const publicRoutes = ['/login', '/register', '/api/auth/login', '/api/auth/register']
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
   
   // Verificar se é uma rota pública
