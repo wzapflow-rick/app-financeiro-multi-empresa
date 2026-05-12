@@ -29,6 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { Checkbox } from '@/components/ui/checkbox'
 import { cn } from '@/lib/utils'
 import { useEmpresas, useCategorias, createLancamento, updateLancamento } from '@/hooks/use-data'
 import type { Lancamento } from '@/lib/types'
@@ -65,6 +66,10 @@ export function LancamentoForm({
     lancamento?.status === 'pago' ? 'pago' : 'pendente'
   )
   const [observacoes, setObservacoes] = useState(lancamento?.observacoes || '')
+  const [recorrente, setRecorrente] = useState(lancamento?.recorrente || false)
+  const [frequencia, setFrequencia] = useState<'semanal' | 'quinzenal' | 'mensal' | 'anual'>(
+    lancamento?.frequencia || 'mensal'
+  )
 
   const filteredCategorias = categorias.filter((c) => c.tipo === tipo)
 
@@ -83,6 +88,8 @@ export function LancamentoForm({
         categoria_id: parseInt(categoriaId),
         status,
         observacoes,
+        recorrente,
+        frequencia: recorrente ? frequencia : null,
       }
 
       if (lancamento?.Id) {
@@ -111,6 +118,8 @@ export function LancamentoForm({
     setCategoriaId('')
     setStatus('pendente')
     setObservacoes('')
+    setRecorrente(false)
+    setFrequencia('mensal')
   }
 
   return (
@@ -275,13 +284,46 @@ export function LancamentoForm({
             </Select>
           </div>
 
+          <div className="space-y-3 rounded-lg border p-3">
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="recorrente"
+                checked={recorrente}
+                onCheckedChange={(checked) => setRecorrente(checked === true)}
+              />
+              <Label htmlFor="recorrente" className="text-sm font-normal cursor-pointer">
+                Lancamento recorrente (repete automaticamente)
+              </Label>
+            </div>
+            
+            {recorrente && (
+              <div className="space-y-2 pl-6">
+                <Label>Frequencia</Label>
+                <Select value={frequencia} onValueChange={(v) => setFrequencia(v as typeof frequencia)}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="semanal">Semanal</SelectItem>
+                    <SelectItem value="quinzenal">Quinzenal</SelectItem>
+                    <SelectItem value="mensal">Mensal</SelectItem>
+                    <SelectItem value="anual">Anual</SelectItem>
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                  O sistema criara automaticamente os proximos lancamentos
+                </p>
+              </div>
+            )}
+          </div>
+
           <div className="space-y-2">
-            <Label htmlFor="observacoes">Observações</Label>
+            <Label htmlFor="observacoes">Observacoes</Label>
             <Textarea
               id="observacoes"
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
-              placeholder="Observações adicionais..."
+              placeholder="Observacoes adicionais..."
               rows={2}
             />
           </div>

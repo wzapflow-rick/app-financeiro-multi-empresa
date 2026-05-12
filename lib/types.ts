@@ -37,6 +37,8 @@ export interface Lancamento {
   categoria_id: number
   usuario_id: number
   observacoes?: string
+  recorrente?: boolean
+  frequencia?: 'semanal' | 'quinzenal' | 'mensal' | 'anual'
   created_at?: string
   // Relacionamentos (populated)
   empresa?: Empresa
