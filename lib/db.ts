@@ -3,9 +3,10 @@
 import { Pool, QueryResult } from 'pg'
 
 // Pool de conexões compartilhado
+// SSL desabilitado pois o servidor PostgreSQL não suporta conexões SSL
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+  ssl: false,
 })
 
 // Função helper para executar queries
