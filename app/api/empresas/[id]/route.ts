@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { empresasDb } from '@/lib/db'
+import { empresasDb, lancamentosDb } from '@/lib/db'
 import { getRequestUser } from '@/lib/request-user'
 
 export async function GET(
@@ -63,6 +63,14 @@ export async function DELETE(
     const empresa = await empresasDb.get(parseInt(id))
     if (!empresa || empresa.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
+    }
+    
+    // Verificar se há lançamentos associados
+    const lancamentos = await lancamentosDb.list({ empresa_id: parseInt(id), usuario_id: user.id })
+    if (lancamentos.length > 0) {
+      return NextResponse.json({ 
+        error: `Não é possível excluir esta empresa pois ela possui ${lancamentos.length} lançamento(s) associado(s). Exclua os lançamentos primeiro.` 
+      }, { status: 400 })
     }
     
     await empresasDb.delete(parseInt(id))

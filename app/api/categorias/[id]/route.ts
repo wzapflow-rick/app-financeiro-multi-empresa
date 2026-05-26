@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { categoriasDb } from '@/lib/db'
+import { categoriasDb, lancamentosDb } from '@/lib/db'
 import { getRequestUser } from '@/lib/request-user'
 
 export async function GET(
@@ -63,6 +63,14 @@ export async function DELETE(
     const categoria = await categoriasDb.get(parseInt(id))
     if (!categoria || categoria.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 })
+    }
+    
+    // Verificar se há lançamentos associados
+    const lancamentos = await lancamentosDb.list({ categoria_id: parseInt(id), usuario_id: user.id })
+    if (lancamentos.length > 0) {
+      return NextResponse.json({ 
+        error: `Não é possível excluir esta categoria pois ela possui ${lancamentos.length} lançamento(s) associado(s). Exclua os lançamentos primeiro.` 
+      }, { status: 400 })
     }
     
     await categoriasDb.delete(parseInt(id))
