@@ -5,6 +5,23 @@ import type { Empresa, Categoria, Lancamento, DashboardStats, FluxoCaixaMensal, 
 
 const fetcher = (url: string) => fetch(url).then(res => res.json())
 
+// Hook para usuário logado
+interface User {
+  id: number
+  nome: string
+  email: string
+}
+
+export function useUser() {
+  const { data, error, isLoading } = useSWR<{ user: User }>('/api/auth/me', fetcher)
+  
+  return {
+    user: data?.user || null,
+    isLoading,
+    isError: error,
+  }
+}
+
 // Hook para empresas
 export function useEmpresas() {
   const { data, error, isLoading, mutate } = useSWR<Empresa[]>('/api/empresas', fetcher)

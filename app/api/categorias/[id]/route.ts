@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server'
 import { categoriasDb } from '@/lib/db'
+import { getRequestUser } from '@/lib/request-user'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
     const categoria = await categoriasDb.get(parseInt(id))
-    if (!categoria) {
+    if (!categoria || categoria.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 })
     }
     return NextResponse.json(categoria)
@@ -23,13 +29,20 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
-    const data = await request.json()
-    const categoria = await categoriasDb.update(parseInt(id), data)
-    if (!categoria) {
+    const categoria = await categoriasDb.get(parseInt(id))
+    if (!categoria || categoria.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 })
     }
-    return NextResponse.json(categoria)
+    
+    const data = await request.json()
+    const updated = await categoriasDb.update(parseInt(id), data)
+    return NextResponse.json(updated)
   } catch (error) {
     console.error('[API] Erro ao atualizar categoria:', error)
     return NextResponse.json({ error: 'Erro ao atualizar categoria' }, { status: 500 })
@@ -41,11 +54,18 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
-    const deleted = await categoriasDb.delete(parseInt(id))
-    if (!deleted) {
+    const categoria = await categoriasDb.get(parseInt(id))
+    if (!categoria || categoria.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Categoria não encontrada' }, { status: 404 })
     }
+    
+    await categoriasDb.delete(parseInt(id))
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[API] Erro ao deletar categoria:', error)

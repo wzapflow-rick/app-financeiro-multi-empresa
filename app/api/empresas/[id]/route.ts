@@ -1,14 +1,20 @@
 import { NextResponse } from 'next/server'
 import { empresasDb } from '@/lib/db'
+import { getRequestUser } from '@/lib/request-user'
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
     const empresa = await empresasDb.get(parseInt(id))
-    if (!empresa) {
+    if (!empresa || empresa.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
     }
     return NextResponse.json(empresa)
@@ -23,13 +29,20 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
-    const data = await request.json()
-    const empresa = await empresasDb.update(parseInt(id), data)
-    if (!empresa) {
+    const empresa = await empresasDb.get(parseInt(id))
+    if (!empresa || empresa.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
     }
-    return NextResponse.json(empresa)
+    
+    const data = await request.json()
+    const updated = await empresasDb.update(parseInt(id), data)
+    return NextResponse.json(updated)
   } catch (error) {
     console.error('[API] Erro ao atualizar empresa:', error)
     return NextResponse.json({ error: 'Erro ao atualizar empresa' }, { status: 500 })
@@ -41,11 +54,18 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { id } = await params
-    const deleted = await empresasDb.delete(parseInt(id))
-    if (!deleted) {
+    const empresa = await empresasDb.get(parseInt(id))
+    if (!empresa || empresa.usuario_id !== user.id) {
       return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
     }
+    
+    await empresasDb.delete(parseInt(id))
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[API] Erro ao deletar empresa:', error)

@@ -1,19 +1,26 @@
 import { NextResponse } from 'next/server'
 import { lancamentosDb, empresasDb, categoriasDb } from '@/lib/db'
+import { getRequestUser } from '@/lib/request-user'
 import type { DashboardStats } from '@/lib/types'
 
 export async function GET(request: Request) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { searchParams } = new URL(request.url)
     const empresa_id = searchParams.get('empresa_id')
     
-    // Buscar todos os dados em paralelo
+    // Buscar todos os dados em paralelo (filtrados por usuário)
     const [lancamentos, empresas, categorias] = await Promise.all([
       lancamentosDb.list({ 
-        empresaId: empresa_id ? parseInt(empresa_id) : undefined 
+        empresaId: empresa_id ? parseInt(empresa_id) : undefined,
+        usuarioId: user.id,
       }),
-      empresasDb.list(),
-      categoriasDb.list(),
+      empresasDb.list(user.id),
+      categoriasDb.list({ usuarioId: user.id }),
     ])
     
     // Calcular estatísticas
