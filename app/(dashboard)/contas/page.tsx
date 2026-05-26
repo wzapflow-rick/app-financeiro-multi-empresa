@@ -27,10 +27,10 @@ export default function ContasPage() {
   const { empresas } = useEmpresas()
 
   const getEmpresaNome = (id: number) =>
-    empresas.find((e) => e.Id === id)?.nome || '-'
+    empresas.find((e) => e.id === id)?.nome || '-'
   
   const getEmpresaCor = (id: number) =>
-    empresas.find((e) => e.Id === id)?.cor || '#3b82f6'
+    empresas.find((e) => e.id === id)?.cor || '#3b82f6'
 
   // Agrupar contas por status
   const { vencidas, hoje, proximas, futuras, pagas } = useMemo(() => {
@@ -144,7 +144,7 @@ export default function ContasPage() {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => marcarComoPago(lancamento.Id)}
+              onClick={() => marcarComoPago(lancamento.id)}
             >
               <CheckCircle2 className="mr-1 h-4 w-4" />
               Pagar
@@ -158,7 +158,7 @@ export default function ContasPage() {
   const ContasList = ({ items, emptyMessage }: { items: Lancamento[]; emptyMessage: string }) => (
     <div className="space-y-3">
       {items.length > 0 ? (
-        items.map((l) => <ContaItem key={l.Id} lancamento={l} />)
+        items.map((l) => <ContaItem key={l.id} lancamento={l} />)
       ) : (
         <div className="py-12 text-center text-muted-foreground">{emptyMessage}</div>
       )}

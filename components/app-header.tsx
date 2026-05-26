@@ -1,5 +1,6 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -9,7 +10,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useEmpresas } from '@/hooks/use-data'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { useEmpresas, useUser } from '@/hooks/use-data'
+import { LogOut, User } from 'lucide-react'
 
 interface AppHeaderProps {
   title: string
@@ -24,7 +33,15 @@ export function AppHeader({
   onEmpresaChange,
   showEmpresaFilter = true,
 }: AppHeaderProps) {
+  const router = useRouter()
   const { empresas } = useEmpresas()
+  const { user } = useUser()
+  
+  async function handleLogout() {
+    await fetch('/api/auth/logout', { method: 'POST' })
+    router.push('/login')
+    router.refresh()
+  }
 
   return (
     <header className="flex h-14 shrink-0 items-center gap-2 border-b px-4">
@@ -46,7 +63,7 @@ export function AppHeader({
             <SelectContent>
               <SelectItem value="all">Todas empresas</SelectItem>
               {empresas.map((empresa) => (
-                <SelectItem key={empresa.Id} value={empresa.Id.toString()}>
+                <SelectItem key={empresa.id} value={empresa.id.toString()}>
                   <div className="flex items-center gap-2">
                     <div
                       className="h-2 w-2 rounded-full"
@@ -59,6 +76,26 @@ export function AppHeader({
             </SelectContent>
           </Select>
         )}
+        
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <User className="h-5 w-5" />
+              <span className="sr-only">Menu do usuario</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {user && (
+              <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                {user.nome}
+              </div>
+            )}
+            <DropdownMenuItem onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Sair
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   )

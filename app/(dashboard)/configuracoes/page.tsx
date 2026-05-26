@@ -160,7 +160,7 @@ export default function ConfiguracoesPage() {
                   {empresas.length > 0 ? (
                     empresas.map((empresa) => (
                       <div
-                        key={empresa.Id}
+                        key={empresa.id}
                         className="flex items-center justify-between rounded-lg border p-4"
                       >
                         <div className="flex items-center gap-3">
@@ -173,7 +173,7 @@ export default function ConfiguracoesPage() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => setEmpresaDeleteId(empresa.Id)}
+                          onClick={() => setEmpresaDeleteId(empresa.id)}
                           className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -218,7 +218,7 @@ export default function ConfiguracoesPage() {
                       {categoriasEntrada.length > 0 ? (
                         categoriasEntrada.map((cat) => (
                           <div
-                            key={cat.Id}
+                            key={cat.id}
                             className="flex items-center justify-between rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3"
                           >
                             <div className="flex items-center gap-2">
@@ -233,7 +233,7 @@ export default function ConfiguracoesPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setCategoriaDeleteId(cat.Id)}
+                              onClick={() => setCategoriaDeleteId(cat.id)}
                               className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -257,7 +257,7 @@ export default function ConfiguracoesPage() {
                       {categoriasSaida.length > 0 ? (
                         categoriasSaida.map((cat) => (
                           <div
-                            key={cat.Id}
+                            key={cat.id}
                             className="flex items-center justify-between rounded-lg border border-red-500/20 bg-red-500/5 p-3"
                           >
                             <div className="flex items-center gap-2">
@@ -272,7 +272,7 @@ export default function ConfiguracoesPage() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => setCategoriaDeleteId(cat.Id)}
+                              onClick={() => setCategoriaDeleteId(cat.id)}
                               className="h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/10"
                             >
                               <Trash2 className="h-4 w-4" />

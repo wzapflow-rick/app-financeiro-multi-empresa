@@ -85,8 +85,8 @@ export function LancamentoForm({
         observacoes,
       }
 
-      if (lancamento?.Id) {
-        await updateLancamento(lancamento.Id, payload)
+      if (lancamento?.id) {
+        await updateLancamento(lancamento.id, payload)
       } else {
         await createLancamento(payload)
       }
@@ -188,7 +188,7 @@ export function LancamentoForm({
                 </SelectTrigger>
                 <SelectContent>
                   {empresas.map((empresa) => (
-                    <SelectItem key={empresa.Id} value={empresa.Id.toString()}>
+                    <SelectItem key={empresa.id} value={empresa.id.toString()}>
                       <div className="flex items-center gap-2">
                         <div
                           className="h-2 w-2 rounded-full"
@@ -267,7 +267,7 @@ export function LancamentoForm({
               </SelectTrigger>
               <SelectContent>
                 {filteredCategorias.map((categoria) => (
-                  <SelectItem key={categoria.Id} value={categoria.Id.toString()}>
+                  <SelectItem key={categoria.id} value={categoria.id.toString()}>
                     {categoria.nome}
                   </SelectItem>
                 ))}

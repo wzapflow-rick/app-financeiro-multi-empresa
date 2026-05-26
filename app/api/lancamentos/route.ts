@@ -1,40 +1,29 @@
 import { NextResponse } from 'next/server'
-import { lancamentosApi } from '@/lib/nocodb'
+import { lancamentosDb } from '@/lib/db'
+import { getRequestUser } from '@/lib/request-user'
 
 export async function GET(request: Request) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { searchParams } = new URL(request.url)
     const empresa_id = searchParams.get('empresa_id')
     const tipo = searchParams.get('tipo')
     const status = searchParams.get('status')
     const limit = searchParams.get('limit')
     
-    const whereConditions: string[] = []
+    const lancamentos = await lancamentosDb.list({
+      empresaId: empresa_id ? parseInt(empresa_id) : undefined,
+      tipo: tipo || undefined,
+      status: status || undefined,
+      limit: limit ? parseInt(limit) : undefined,
+      usuarioId: user.id,
+    })
     
-    if (empresa_id) {
-      whereConditions.push(`(empresa_id,eq,${empresa_id})`)
-    }
-    if (tipo) {
-      whereConditions.push(`(tipo,eq,${tipo})`)
-    }
-    if (status) {
-      whereConditions.push(`(status,eq,${status})`)
-    }
-    
-    const params: { sort: string; where?: string; limit?: number } = { 
-      sort: '-data_vencimento' 
-    }
-    
-    if (whereConditions.length > 0) {
-      params.where = whereConditions.join('~and')
-    }
-    
-    if (limit) {
-      params.limit = parseInt(limit)
-    }
-    
-    const response = await lancamentosApi.list(params)
-    return NextResponse.json(response.list)
+    return NextResponse.json(lancamentos)
   } catch (error) {
     console.error('[API] Erro ao listar lançamentos:', error)
     return NextResponse.json({ error: 'Erro ao listar lançamentos' }, { status: 500 })
@@ -43,8 +32,16 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const data = await request.json()
-    const lancamento = await lancamentosApi.create(data)
+    const lancamento = await lancamentosDb.create({
+      ...data,
+      usuario_id: user.id,
+    })
     return NextResponse.json(lancamento)
   } catch (error) {
     console.error('[API] Erro ao criar lançamento:', error)

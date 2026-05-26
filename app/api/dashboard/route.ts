@@ -1,27 +1,27 @@
 import { NextResponse } from 'next/server'
-import { lancamentosApi, empresasApi, categoriasApi } from '@/lib/nocodb'
-import type { Lancamento, Empresa, Categoria, DashboardStats } from '@/lib/types'
+import { lancamentosDb, empresasDb, categoriasDb } from '@/lib/db'
+import { getRequestUser } from '@/lib/request-user'
+import type { DashboardStats } from '@/lib/types'
 
 export async function GET(request: Request) {
   try {
+    const user = await getRequestUser()
+    if (!user) {
+      return NextResponse.json({ error: 'Não autorizado' }, { status: 401 })
+    }
+    
     const { searchParams } = new URL(request.url)
     const empresa_id = searchParams.get('empresa_id')
     
-    // Buscar todos os dados em paralelo
-    const [lancamentosRes, empresasRes, categoriasRes] = await Promise.all([
-      lancamentosApi.list({ limit: 1000 }),
-      empresasApi.list(),
-      categoriasApi.list(),
+    // Buscar todos os dados em paralelo (filtrados por usuário)
+    const [lancamentos, empresas, categorias] = await Promise.all([
+      lancamentosDb.list({ 
+        empresaId: empresa_id ? parseInt(empresa_id) : undefined,
+        usuarioId: user.id,
+      }),
+      empresasDb.list(user.id),
+      categoriasDb.list({ usuarioId: user.id }),
     ])
-    
-    let lancamentos = lancamentosRes.list as Lancamento[]
-    const empresas = empresasRes.list as Empresa[]
-    const categorias = categoriasRes.list as Categoria[]
-    
-    // Filtrar por empresa se especificado
-    if (empresa_id) {
-      lancamentos = lancamentos.filter(l => l.empresa_id === parseInt(empresa_id))
-    }
     
     // Calcular estatísticas
     const totalEntradas = lancamentos
@@ -37,13 +37,13 @@ export async function GET(request: Request) {
     
     const contasPendentes = lancamentos.filter(l => {
       if (l.status === 'pago') return false
-      const vencimento = new Date(l.data_vencimento || l.data)
+      const vencimento = new Date(l.data_vencimento || l.data || new Date())
       return vencimento >= today
     }).length
     
     const contasVencidas = lancamentos.filter(l => {
       if (l.status === 'pago') return false
-      const vencimento = new Date(l.data_vencimento || l.data)
+      const vencimento = new Date(l.data_vencimento || l.data || new Date())
       return vencimento < today
     }).length
     
@@ -63,11 +63,19 @@ export async function GET(request: Request) {
       const mes = date.toISOString().slice(0, 7) // YYYY-MM
       
       const entradasMes = lancamentos
-        .filter(l => l.tipo === 'entrada' && l.status === 'pago' && l.data?.startsWith(mes))
+        .filter(l => {
+          if (l.tipo !== 'entrada' || l.status !== 'pago') return false
+          const dataLanc = l.data ? new Date(l.data).toISOString().slice(0, 7) : null
+          return dataLanc === mes
+        })
         .reduce((sum, l) => sum + (l.valor || 0), 0)
       
       const saidasMes = lancamentos
-        .filter(l => l.tipo === 'saida' && l.status === 'pago' && l.data?.startsWith(mes))
+        .filter(l => {
+          if (l.tipo !== 'saida' || l.status !== 'pago') return false
+          const dataLanc = l.data ? new Date(l.data).toISOString().slice(0, 7) : null
+          return dataLanc === mes
+        })
         .reduce((sum, l) => sum + (l.valor || 0), 0)
       
       fluxoCaixa.push({
@@ -82,7 +90,7 @@ export async function GET(request: Request) {
       .filter(c => c.tipo === 'saida')
       .map(cat => {
         const valor = lancamentos
-          .filter(l => l.categoria_id === cat.Id && l.tipo === 'saida' && l.status === 'pago')
+          .filter(l => l.categoria_id === cat.id && l.tipo === 'saida' && l.status === 'pago')
           .reduce((sum, l) => sum + (l.valor || 0), 0)
         return {
           categoria: cat.nome,
@@ -100,7 +108,7 @@ export async function GET(request: Request) {
     const contasProximas = lancamentos
       .filter(l => {
         if (l.status === 'pago') return false
-        const vencimento = new Date(l.data_vencimento || l.data)
+        const vencimento = new Date(l.data_vencimento || l.data || new Date())
         return vencimento >= today && vencimento <= seteDias
       })
       .slice(0, 5)
