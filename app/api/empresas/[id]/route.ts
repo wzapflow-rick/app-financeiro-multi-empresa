@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { empresasApi } from '@/lib/nocodb'
+import { empresasDb } from '@/lib/db'
 
 export async function GET(
   request: Request,
@@ -7,7 +7,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const empresa = await empresasApi.get(parseInt(id))
+    const empresa = await empresasDb.get(parseInt(id))
+    if (!empresa) {
+      return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
+    }
     return NextResponse.json(empresa)
   } catch (error) {
     console.error('[API] Erro ao buscar empresa:', error)
@@ -22,7 +25,10 @@ export async function PATCH(
   try {
     const { id } = await params
     const data = await request.json()
-    const empresa = await empresasApi.update(parseInt(id), data)
+    const empresa = await empresasDb.update(parseInt(id), data)
+    if (!empresa) {
+      return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
+    }
     return NextResponse.json(empresa)
   } catch (error) {
     console.error('[API] Erro ao atualizar empresa:', error)
@@ -36,7 +42,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    await empresasApi.delete(parseInt(id))
+    const deleted = await empresasDb.delete(parseInt(id))
+    if (!deleted) {
+      return NextResponse.json({ error: 'Empresa não encontrada' }, { status: 404 })
+    }
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[API] Erro ao deletar empresa:', error)

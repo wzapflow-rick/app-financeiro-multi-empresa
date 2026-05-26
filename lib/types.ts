@@ -1,40 +1,46 @@
 // Tipos do App Financeiro
 
 export interface Empresa {
-  Id: number
+  id: number
   nome: string
-  cor: string
-  created_at?: string
+  cor: string | null
+  usuario_id: number | null
+  created_at?: Date | null
+  updated_at?: Date | null
 }
 
 export interface Usuario {
-  Id: number
+  id: number
   nome: string
   email: string
   senha?: string
-  created_at?: string
+  created_at?: Date | null
+  updated_at?: Date | null
 }
 
 export interface Categoria {
-  Id: number
+  id: number
   nome: string
-  tipo: 'entrada' | 'saida'
-  icone?: string
-  created_at?: string
+  tipo: 'entrada' | 'saida' | string | null
+  usuario_id?: number | null
+  created_at?: Date | null
+  updated_at?: Date | null
 }
 
 export interface Lancamento {
-  Id: number
-  descricao: string
-  valor: number
-  tipo: 'entrada' | 'saida'
-  data: string
-  data_vencimento?: string
-  status: 'pago' | 'pendente' | 'vencido'
-  empresa_id: number
-  categoria_id: number
-  observacoes?: string
-  created_at?: string
+  id: number
+  descricao: string | null
+  valor: number | null
+  tipo: 'entrada' | 'saida' | string | null
+  data: string | Date | null
+  data_vencimento: string | Date | null
+  status: 'pago' | 'pendente' | 'vencido' | string | null
+  empresa_id: number | null
+  categoria_id: number | null
+  observacoes: string | null
+  usuario_id: number | null
+  created_at?: Date | null
+  updated_at?: Date | null
   // Relacionamentos (populated)
   empresa?: Empresa
   categoria?: Categoria
@@ -57,23 +63,5 @@ export interface FluxoCaixaMensal {
 export interface DespesaCategoria {
   categoria: string
   valor: number
-  cor: string
-}
-
-// NocoDB API Types
-export interface NocoDBListResponse<T> {
-  list: T[]
-  pageInfo: {
-    totalRows: number
-    page: number
-    pageSize: number
-    isFirstPage: boolean
-    isLastPage: boolean
-  }
-}
-
-export interface NocoDBRecord {
-  Id: number
-  created_at?: string
-  updated_at?: string
+  cor?: string
 }

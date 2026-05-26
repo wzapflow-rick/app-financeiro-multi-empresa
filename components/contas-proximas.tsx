@@ -25,7 +25,7 @@ export function ContasProximas({ lancamentos }: ContasProximasProps) {
 
               return (
                 <div
-                  key={lancamento.Id}
+                  key={lancamento.id}
                   className="flex items-center justify-between rounded-lg border p-3"
                 >
                   <div className="flex-1 min-w-0">

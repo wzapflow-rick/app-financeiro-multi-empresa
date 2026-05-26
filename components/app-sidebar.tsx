@@ -105,9 +105,9 @@ export function AppSidebar() {
               <SidebarGroupContent>
                 <SidebarMenu>
                   {empresas.map((empresa) => (
-                    <SidebarMenuItem key={empresa.Id}>
+                    <SidebarMenuItem key={empresa.id}>
                       <SidebarMenuButton asChild tooltip={empresa.nome}>
-                        <Link href={`/?empresa=${empresa.Id}`}>
+                        <Link href={`/?empresa=${empresa.id}`}>
                           <div
                             className="h-3 w-3 rounded-full"
                             style={{ backgroundColor: empresa.cor || '#3b82f6' }}

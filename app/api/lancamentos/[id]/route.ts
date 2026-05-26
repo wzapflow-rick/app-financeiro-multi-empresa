@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { lancamentosApi } from '@/lib/nocodb'
+import { lancamentosDb } from '@/lib/db'
 
 export async function GET(
   request: Request,
@@ -7,7 +7,10 @@ export async function GET(
 ) {
   try {
     const { id } = await params
-    const lancamento = await lancamentosApi.get(parseInt(id))
+    const lancamento = await lancamentosDb.get(parseInt(id))
+    if (!lancamento) {
+      return NextResponse.json({ error: 'Lançamento não encontrado' }, { status: 404 })
+    }
     return NextResponse.json(lancamento)
   } catch (error) {
     console.error('[API] Erro ao buscar lançamento:', error)
@@ -22,7 +25,10 @@ export async function PATCH(
   try {
     const { id } = await params
     const data = await request.json()
-    const lancamento = await lancamentosApi.update(parseInt(id), data)
+    const lancamento = await lancamentosDb.update(parseInt(id), data)
+    if (!lancamento) {
+      return NextResponse.json({ error: 'Lançamento não encontrado' }, { status: 404 })
+    }
     return NextResponse.json(lancamento)
   } catch (error) {
     console.error('[API] Erro ao atualizar lançamento:', error)
@@ -36,7 +42,10 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    await lancamentosApi.delete(parseInt(id))
+    const deleted = await lancamentosDb.delete(parseInt(id))
+    if (!deleted) {
+      return NextResponse.json({ error: 'Lançamento não encontrado' }, { status: 404 })
+    }
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[API] Erro ao deletar lançamento:', error)

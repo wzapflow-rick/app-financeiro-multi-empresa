@@ -55,13 +55,13 @@ export default function LancamentosPage() {
   const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const getEmpresaNome = (id: number) =>
-    empresas.find((e) => e.Id === id)?.nome || '-'
+    empresas.find((e) => e.id === id)?.nome || '-'
   
   const getEmpresaCor = (id: number) =>
-    empresas.find((e) => e.Id === id)?.cor || '#3b82f6'
+    empresas.find((e) => e.id === id)?.cor || '#3b82f6'
   
   const getCategoriaNome = (id: number) =>
-    categorias.find((c) => c.Id === id)?.nome || '-'
+    categorias.find((c) => c.id === id)?.nome || '-'
 
   const handleDelete = async () => {
     if (!deleteId) return
@@ -138,7 +138,7 @@ export default function LancamentosPage() {
                 </TableRow>
               ) : (
                 lancamentos.map((lancamento) => (
-                  <TableRow key={lancamento.Id}>
+                  <TableRow key={lancamento.id}>
                     <TableCell>
                       {lancamento.tipo === 'entrada' ? (
                         <ArrowUpCircle className="h-5 w-5 text-emerald-500" />
@@ -200,7 +200,7 @@ export default function LancamentosPage() {
                             Editar
                           </DropdownMenuItem>
                           <DropdownMenuItem
-                            onClick={() => setDeleteId(lancamento.Id)}
+                            onClick={() => setDeleteId(lancamento.id)}
                             className="text-red-500"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />

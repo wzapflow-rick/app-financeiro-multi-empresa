@@ -46,7 +46,7 @@ export function AppHeader({
             <SelectContent>
               <SelectItem value="all">Todas empresas</SelectItem>
               {empresas.map((empresa) => (
-                <SelectItem key={empresa.Id} value={empresa.Id.toString()}>
+                <SelectItem key={empresa.id} value={empresa.id.toString()}>
                   <div className="flex items-center gap-2">
                     <div
                       className="h-2 w-2 rounded-full"

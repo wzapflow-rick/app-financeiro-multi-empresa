@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
-import { empresasApi } from '@/lib/nocodb'
+import { empresasDb } from '@/lib/db'
 
 export async function GET() {
   try {
-    const response = await empresasApi.list({ sort: 'nome' })
-    return NextResponse.json(response.list)
+    const empresas = await empresasDb.list()
+    return NextResponse.json(empresas)
   } catch (error) {
     console.error('[API] Erro ao listar empresas:', error)
     return NextResponse.json({ error: 'Erro ao listar empresas' }, { status: 500 })
@@ -14,7 +14,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const data = await request.json()
-    const empresa = await empresasApi.create(data)
+    const empresa = await empresasDb.create(data)
     return NextResponse.json(empresa)
   } catch (error) {
     console.error('[API] Erro ao criar empresa:', error)

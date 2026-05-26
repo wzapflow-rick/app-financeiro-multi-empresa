@@ -81,7 +81,7 @@ export default function RelatoriosPage() {
 
     return Object.entries(cats)
       .map(([id, valor]) => ({
-        categoria: categorias.find((c) => c.Id === parseInt(id))?.nome || 'Outros',
+        categoria: categorias.find((c) => c.id === parseInt(id))?.nome || 'Outros',
         valor,
       }))
       .sort((a, b) => b.valor - a.valor)
@@ -106,8 +106,8 @@ export default function RelatoriosPage() {
       })
 
     return Object.entries(emps).map(([id, dados]) => ({
-      empresa: empresas.find((e) => e.Id === parseInt(id))?.nome || 'Desconhecida',
-      cor: empresas.find((e) => e.Id === parseInt(id))?.cor || '#3b82f6',
+      empresa: empresas.find((e) => e.id === parseInt(id))?.nome || 'Desconhecida',
+      cor: empresas.find((e) => e.id === parseInt(id))?.cor || '#3b82f6',
       ...dados,
       saldo: dados.entradas - dados.saidas,
     }))
