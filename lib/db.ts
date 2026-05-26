@@ -223,6 +223,14 @@ export const categoriasDb = {
 
 // ==================== API Lancamentos ====================
 
+// Helper para converter valor de string (numeric) para number
+function normalizeLancamento(row: DBLancamento): DBLancamento {
+  return {
+    ...row,
+    valor: row.valor !== null ? parseFloat(String(row.valor)) : null
+  }
+}
+
 export const lancamentosDb = {
   async list(params?: {
     empresaId?: number
@@ -260,7 +268,7 @@ export const lancamentosDb = {
     }
 
     const result = await query<DBLancamento>(sql, values)
-    return result.rows
+    return result.rows.map(normalizeLancamento)
   },
 
   async get(id: number): Promise<DBLancamento | null> {
@@ -268,7 +276,7 @@ export const lancamentosDb = {
       'SELECT * FROM lancamentos WHERE id = $1',
       [id]
     )
-    return result.rows[0] || null
+    return result.rows[0] ? normalizeLancamento(result.rows[0]) : null
   },
 
   async create(data: Partial<DBLancamento>): Promise<DBLancamento> {
@@ -292,7 +300,7 @@ export const lancamentosDb = {
         data.usuario_id,
       ]
     )
-    return result.rows[0]
+    return normalizeLancamento(result.rows[0])
   },
 
   async update(id: number, data: Partial<DBLancamento>): Promise<DBLancamento | null> {
@@ -346,7 +354,7 @@ export const lancamentosDb = {
       `UPDATE lancamentos SET ${fields.join(', ')} WHERE id = $${paramIndex} RETURNING *`,
       values
     )
-    return result.rows[0] || null
+    return result.rows[0] ? normalizeLancamento(result.rows[0]) : null
   },
 
   async delete(id: number): Promise<boolean> {
